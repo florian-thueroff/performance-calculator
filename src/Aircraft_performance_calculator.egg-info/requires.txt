@@ -1,0 +1,7 @@
+matplotlib
+fastapi<0.69.0,>=0.68.0
+pydantic<2.0.0,>=1.8.0
+uvicorn<0.16.0,>=0.15.0
+aiofiles
+pdfkit
+streamlit

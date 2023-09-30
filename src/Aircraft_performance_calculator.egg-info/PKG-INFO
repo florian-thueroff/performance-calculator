@@ -1,0 +1,22 @@
+Metadata-Version: 2.1
+Name: Aircraft-performance-calculator
+Version: 0.0.0
+Summary: Aircraft performance calculator
+Author: Florian Thueroff
+Platform: unix
+Platform: linux
+Platform: osx
+Platform: cygwin
+Platform: win32
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Python: >=3.8
+Requires-Dist: matplotlib
+Requires-Dist: fastapi<0.69.0,>=0.68.0
+Requires-Dist: pydantic<2.0.0,>=1.8.0
+Requires-Dist: uvicorn<0.16.0,>=0.15.0
+Requires-Dist: aiofiles
+Requires-Dist: pdfkit
+Requires-Dist: streamlit

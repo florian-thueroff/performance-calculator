@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background: rgb(204, 204, 204);
+        }
+
+        page {
+            background: white;
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 0.5cm;
+            box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+            padding: 2cm;
+            box-sizing: border-box;
+        }
+
+        img {
+            width: 17cm;
+        }
+
+        page[size="A4"] {
+            width: 21cm;
+            height: 29.7cm;
+        }
+
+        page[size="A4"][layout="landscape"] {
+            width: 29.7cm;
+            height: 21cm;
+        }
+
+        page[size="A3"] {
+            width: 29.7cm;
+            height: 42cm;
+        }
+
+        page[size="A3"][layout="landscape"] {
+            width: 42cm;
+            height: 29.7cm;
+        }
+
+        page[size="A5"] {
+            width: 14.8cm;
+            height: 21cm;
+        }
+
+        page[size="A5"][layout="landscape"] {
+            width: 21cm;
+            height: 14.8cm;
+        }
+
+        @media print {
+
+            body,
+            page {
+                background: white;
+                margin: 0;
+                box-shadow: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <page size="A4">
+        <h1>Das ist eine Überschrift</h1>
+        <img src="ldg_0m.png">
+        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quis et natus, veniam necessitatibus amet cumque fugiat facere, blanditiis rerum quisquam voluptatibus. Amet libero numquam nam autem, necessitatibus quaerat dolor harum eligendi sunt cupiditate vitae quo quod molestiae natus non iste. Eum consequuntur possimus adipisci sint iusto assumenda quaerat quos! Magni.</p>
+    </page>
+
+    <page size="A4">
+        <h1>Das ist noch eine Überschrift</h1>
+        <img src="ldg_0m.png">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, doloribus temporibus consequuntur vero non fugiat consequatur aperiam nobis qui! Ducimus odit aliquam quasi dolores corporis! Ratione sapiente voluptas repellat odio.</p>
+    </page>
+</body>
+
+</html>
