@@ -164,7 +164,7 @@ class HTMLRenderer:
             <tr>
                 <th class="color" width="50%">Key Figure</th>
                 <th class="color" width="25%">Mass</th>
-                <th class="color" width="25%">Momentum</th>
+                <th class="color" width="25%">Torque</th>
             </tr>
             <tr class="main">
                 <td>Empty Aircraft</td>
@@ -191,7 +191,7 @@ class HTMLRenderer:
                 <td colspan="1" align="right" class="border center">{f'{wb_res.weight_total:.1f}'} kg</td>
             </tr>
             <tr>
-                <td colspan="2" align="right"><b>TOTAL MOMENTUM</b></td>
+                <td colspan="2" align="right"><b>TOTAL TORQUE</b></td>
                 <td colspan="1" align="right" class="border center">{f'{wb_res.momentum_total:.1f}'} kgm</td>
             </tr>
             <tr>
