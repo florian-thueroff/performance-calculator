@@ -2,6 +2,7 @@ import tempfile
 from zipfile import ZipFile
 import streamlit as st
 import matplotlib.pyplot as plt
+import yaml
 
 from my_html.renderer import HTMLRenderer, SummaryResultSet
 from performance.plotter import plot_landingroll, plot_landingroll_over_15m_obstacle, plot_startroll, plot_startroll_over_15m_obstacle
@@ -102,15 +103,13 @@ def data_missing(perf_set: PerformanceSet):
 
 
 st.set_page_config(page_title="Summary", page_icon="📈")
-st.markdown("# Summary")
+# st.markdown("# Summary")
 st.sidebar.header("Summary")
-st.write(
-    """Inspect the performance calculation results below, or download a printable summary."""
-)
 
 with tempfile.TemporaryDirectory() as tmpdir:
-    
-    perf_set = calculate_perfromance(st.session_state, tmpdir)
+
+    with st.spinner('Computing performance figures ...'):
+        perf_set = calculate_perfromance(st.session_state, tmpdir)
     
     renderer = HTMLRenderer()
     if perf_set.departure_performance.wb_data is not None:
@@ -186,124 +185,171 @@ with tempfile.TemporaryDirectory() as tmpdir:
             myzip.write(f"{tmpdir}/l0m_alt.png")
         myzip.write(f"{tmpdir}/summary.html")
     
+    with open(f"{tmpdir}/config.yaml", "w") as f:
+        data = yaml.dump(st.session_state["cache"], f, sort_keys=False, default_flow_style=False)
+    
+    st.markdown("# Export")
+
+    st.markdown("Export the current configuration")
+    with open(f"{tmpdir}/config.yaml", "r") as fp:
+        st.download_button(
+            label="Save Configuration",
+            data=fp,
+            file_name="config.yaml",
+            mime="text/yaml",
+            disabled=data_missing(perf_set),
+            type="secondary",
+        )
+    st.divider()
+    st.markdown("Download a printable performance summary")
     with open(f"{tmpdir}/summary.zip", "rb") as fp:
         st.download_button(
             label="Download Summary",
             data=fp,
             file_name="summary.zip",
             mime="application/zip",
-            disabled=data_missing(perf_set)
+            disabled=data_missing(perf_set),
+            type="primary",
         )
+    
+    st.markdown("# Summary")
     
     margin_factor = 1 + st.session_state["cache"]["safety_margin"] / 100.0
 
     if perf_set.departure_performance.perf_s0_data is not None:
-        base = perf_set.departure_performance.perf_s0_data.metric_value_bare
-        corrected = perf_set.departure_performance.perf_s0_data.metric_value_corrected
-        dcorrected = corrected - base
-        final = margin_factor * corrected
-        dfinal = final - base
-        st.markdown(f"## Start Roll @ {perf_set.departure_performance.summary.icao_code}")
-        st.pyplot(perf_set.departure_performance.perf_s0_fig)
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Calm Winds", f"{round(base)} m")
-        col2.metric("Forecast Wind", f"{round(corrected)} m", f"{round(dcorrected)} m", delta_color="inverse")
-        col3.metric("Safe Value", f"{round(final)} m", f"{round(dfinal)} m", delta_color="inverse")
+        with st.expander(f"Start Roll @ {perf_set.departure_performance.summary.icao_code}"):
+            base = perf_set.departure_performance.perf_s0_data.metric_value_bare
+            corrected = perf_set.departure_performance.perf_s0_data.metric_value_corrected
+            dcorrected = corrected - base
+            final = margin_factor * corrected
+            dfinal = final - base
+            # st.markdown(f"## Start Roll @ {perf_set.departure_performance.summary.icao_code}")
+            st.pyplot(perf_set.departure_performance.perf_s0_fig)
+            st.divider()
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Calm Winds", f"{round(base)} m")
+            col2.metric("Forecast Wind", f"{round(corrected)} m", f"{round(dcorrected)} m", delta_color="inverse")
+            col3.metric("Safe Value", f"{round(final)} m", f"{round(dfinal)} m", delta_color="inverse")
+            st.divider()
     
     if perf_set.departure_performance.perf_s15_data is not None:
-        base = perf_set.departure_performance.perf_s15_data.metric_value_bare
-        corrected = perf_set.departure_performance.perf_s15_data.metric_value_corrected
-        dcorrected = corrected - base
-        final = margin_factor * corrected
-        dfinal = final - base
-        st.markdown(f"## Start Roll (15m Obstacle) @ {perf_set.departure_performance.summary.icao_code}")
-        st.pyplot(perf_set.departure_performance.perf_s15_fig)
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Calm Winds", f"{round(base)} m")
-        col2.metric("Forecast Wind", f"{round(corrected)} m", f"{round(dcorrected)} m", delta_color="inverse")
-        col3.metric("Safe Value", f"{round(final)} m", f"{round(dfinal)} m", delta_color="inverse")
+        with st.expander(f"Start Roll (15m Obstacle) @ {perf_set.departure_performance.summary.icao_code}"):
+            base = perf_set.departure_performance.perf_s15_data.metric_value_bare
+            corrected = perf_set.departure_performance.perf_s15_data.metric_value_corrected
+            dcorrected = corrected - base
+            final = margin_factor * corrected
+            dfinal = final - base
+            # st.markdown(f"## Start Roll (15m Obstacle) @ {perf_set.departure_performance.summary.icao_code}")
+            st.pyplot(perf_set.departure_performance.perf_s15_fig)
+            st.divider()
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Calm Winds", f"{round(base)} m")
+            col2.metric("Forecast Wind", f"{round(corrected)} m", f"{round(dcorrected)} m", delta_color="inverse")
+            col3.metric("Safe Value", f"{round(final)} m", f"{round(dfinal)} m", delta_color="inverse")
+            st.divider()
     
     if perf_set.destination_performance.perf_l0_data is not None:
-        base = perf_set.destination_performance.perf_l0_data.metric_value_bare
-        corrected = perf_set.destination_performance.perf_l0_data.metric_value_corrected
-        dcorrected = corrected - base
-        final = margin_factor * corrected
-        dfinal = final - base
-        st.markdown(f"## Landing Roll @ {perf_set.destination_performance.summary.icao_code}")
-        st.pyplot(perf_set.destination_performance.perf_l0_fig)
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Calm Winds", f"{round(base)} m")
-        col2.metric("Forecast Wind", f"{round(corrected)} m", f"{round(dcorrected)} m", delta_color="inverse")
-        col3.metric("Safe Value", f"{round(final)} m", f"{round(dfinal)} m", delta_color="inverse")
+        with st.expander(f"Landing Roll @ {perf_set.destination_performance.summary.icao_code}"):
+            base = perf_set.destination_performance.perf_l0_data.metric_value_bare
+            corrected = perf_set.destination_performance.perf_l0_data.metric_value_corrected
+            dcorrected = corrected - base
+            final = margin_factor * corrected
+            dfinal = final - base
+            # st.markdown(f"## Landing Roll @ {perf_set.destination_performance.summary.icao_code}")
+            st.pyplot(perf_set.destination_performance.perf_l0_fig)
+            st.divider()
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Calm Winds", f"{round(base)} m")
+            col2.metric("Forecast Wind", f"{round(corrected)} m", f"{round(dcorrected)} m", delta_color="inverse")
+            col3.metric("Safe Value", f"{round(final)} m", f"{round(dfinal)} m", delta_color="inverse")
+            st.divider()
     
     if perf_set.destination_performance.perf_l15_data is not None:
-        base = perf_set.destination_performance.perf_l15_data.metric_value_bare
-        corrected = perf_set.destination_performance.perf_l15_data.metric_value_corrected
-        dcorrected = corrected - base
-        final = margin_factor * corrected
-        dfinal = final - base
-        st.markdown(f"## Landing Roll (15m Obstacle) @ {perf_set.destination_performance.summary.icao_code}")
-        st.pyplot(perf_set.destination_performance.perf_l15_fig)
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Calm Winds", f"{round(base)} m")
-        col2.metric("Forecast Wind", f"{round(corrected)} m", f"{round(dcorrected)} m", delta_color="inverse")
-        col3.metric("Safe Value", f"{round(final)} m", f"{round(dfinal)} m", delta_color="inverse")
+        with st.expander(f"Landing Roll (15m Obstacle) @ {perf_set.destination_performance.summary.icao_code}"):
+            base = perf_set.destination_performance.perf_l15_data.metric_value_bare
+            corrected = perf_set.destination_performance.perf_l15_data.metric_value_corrected
+            dcorrected = corrected - base
+            final = margin_factor * corrected
+            dfinal = final - base
+            # st.markdown(f"## Landing Roll (15m Obstacle) @ {perf_set.destination_performance.summary.icao_code}")
+            st.pyplot(perf_set.destination_performance.perf_l15_fig)
+            st.divider()
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Calm Winds", f"{round(base)} m")
+            col2.metric("Forecast Wind", f"{round(corrected)} m", f"{round(dcorrected)} m", delta_color="inverse")
+            col3.metric("Safe Value", f"{round(final)} m", f"{round(dfinal)} m", delta_color="inverse")
+            st.divider()
     
     if perf_set.alternate_performance.perf_l0_data is not None:
-        base = perf_set.alternate_performance.perf_l0_data.metric_value_bare
-        corrected = perf_set.alternate_performance.perf_l0_data.metric_value_corrected
-        dcorrected = corrected - base
-        final = margin_factor * corrected
-        dfinal = final - base
-        st.markdown(f"## Landing Roll @ {perf_set.alternate_performance.summary.icao_code}")
-        st.pyplot(perf_set.alternate_performance.perf_l0_fig)
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Calm Winds", f"{round(base)} m")
-        col2.metric("Forecast Wind", f"{round(corrected)} m", f"{round(dcorrected)} m", delta_color="inverse")
-        col3.metric("Safe Value", f"{round(final)} m", f"{round(dfinal)} m", delta_color="inverse")
+        with st.expander(f"Landing Roll @ {perf_set.alternate_performance.summary.icao_code}"):
+            base = perf_set.alternate_performance.perf_l0_data.metric_value_bare
+            corrected = perf_set.alternate_performance.perf_l0_data.metric_value_corrected
+            dcorrected = corrected - base
+            final = margin_factor * corrected
+            dfinal = final - base
+            # st.markdown(f"## Landing Roll @ {perf_set.alternate_performance.summary.icao_code}")
+            st.pyplot(perf_set.alternate_performance.perf_l0_fig)
+            st.divider()
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Calm Winds", f"{round(base)} m")
+            col2.metric("Forecast Wind", f"{round(corrected)} m", f"{round(dcorrected)} m", delta_color="inverse")
+            col3.metric("Safe Value", f"{round(final)} m", f"{round(dfinal)} m", delta_color="inverse")
+            st.divider()
     
     if perf_set.alternate_performance.perf_l15_data is not None:
-        base = perf_set.alternate_performance.perf_l15_data.metric_value_bare
-        corrected = perf_set.alternate_performance.perf_l15_data.metric_value_corrected
-        dcorrected = corrected - base
-        final = margin_factor * corrected
-        dfinal = final - base
-        st.markdown(f"## Landing Roll (15m Obstacle) @ {perf_set.alternate_performance.summary.icao_code}")
-        st.pyplot(perf_set.alternate_performance.perf_l15_fig)
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Calm Winds", f"{round(base)} m")
-        col2.metric("Forecast Wind", f"{round(corrected)} m", f"{round(dcorrected)} m", delta_color="inverse")
-        col3.metric("Safe Value", f"{round(final)} m", f"{round(dfinal)} m", delta_color="inverse")
+        with st.expander(f"Landing Roll (15m Obstacle) @ {perf_set.alternate_performance.summary.icao_code}"):
+            base = perf_set.alternate_performance.perf_l15_data.metric_value_bare
+            corrected = perf_set.alternate_performance.perf_l15_data.metric_value_corrected
+            dcorrected = corrected - base
+            final = margin_factor * corrected
+            dfinal = final - base
+            # st.markdown(f"## Landing Roll (15m Obstacle) @ {perf_set.alternate_performance.summary.icao_code}")
+            st.pyplot(perf_set.alternate_performance.perf_l15_fig)
+            st.divider()
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Calm Winds", f"{round(base)} m")
+            col2.metric("Forecast Wind", f"{round(corrected)} m", f"{round(dcorrected)} m", delta_color="inverse")
+            col3.metric("Safe Value", f"{round(final)} m", f"{round(dfinal)} m", delta_color="inverse")
+            st.divider()
     
     if perf_set.departure_performance.wb_data is not None:
-        weight = perf_set.departure_performance.wb_data.weight_total
-        dweight = 780 - weight
-        torque = perf_set.departure_performance.wb_data.momentum_total
-        torque_label = "OK" if perf_set.departure_performance.wb_data.within_limits else "-NOT OK-"
-        st.markdown(f"## Weight & Balance @ {perf_set.departure_performance.summary.icao_code}")
-        st.pyplot(perf_set.departure_performance.wb_fig)
-        col1, col2 = st.columns(2)
-        col1.metric("Weight", f"{round(weight)} kg", f"{round(dweight)} kg")
-        col2.metric("Torque", f"{round(torque)} kgm", torque_label)
+        with st.expander(f"Weight & Balance @ {perf_set.departure_performance.summary.icao_code}"):
+            weight = perf_set.departure_performance.wb_data.weight_total
+            dweight = 780 - weight
+            torque = perf_set.departure_performance.wb_data.momentum_total
+            torque_label = "OK" if perf_set.departure_performance.wb_data.within_limits else "-NOT OK-"
+            # st.markdown(f"## Weight & Balance @ {perf_set.departure_performance.summary.icao_code}")
+            st.pyplot(perf_set.departure_performance.wb_fig)
+            st.divider()
+            col1, col2 = st.columns(2)
+            col1.metric("Weight", f"{round(weight)} kg", f"{round(dweight)} kg")
+            col2.metric("Torque", f"{round(torque)} kgm", torque_label)
+            st.divider()
     
     if perf_set.destination_performance.wb_data is not None:
-        weight = perf_set.destination_performance.wb_data.weight_total
-        dweight = 780 - weight
-        torque = perf_set.destination_performance.wb_data.momentum_total
-        torque_label = "OK" if perf_set.destination_performance.wb_data.within_limits else "-NOT OK-"
-        st.markdown(f"## Weight & Balance @ {perf_set.destination_performance.summary.icao_code}")
-        st.pyplot(perf_set.destination_performance.wb_fig)
-        col1, col2 = st.columns(2)
-        col1.metric("Weight", f"{round(weight)} kg", f"{round(dweight)} kg")
-        col2.metric("Torque", f"{round(torque)} kgm", torque_label)
+        with st.expander(f"Weight & Balance @ {perf_set.destination_performance.summary.icao_code}"):
+            weight = perf_set.destination_performance.wb_data.weight_total
+            dweight = 780 - weight
+            torque = perf_set.destination_performance.wb_data.momentum_total
+            torque_label = "OK" if perf_set.destination_performance.wb_data.within_limits else "-NOT OK-"
+            # st.markdown(f"## Weight & Balance @ {perf_set.destination_performance.summary.icao_code}")
+            st.pyplot(perf_set.destination_performance.wb_fig)
+            st.divider()
+            col1, col2 = st.columns(2)
+            col1.metric("Weight", f"{round(weight)} kg", f"{round(dweight)} kg")
+            col2.metric("Torque", f"{round(torque)} kgm", torque_label)
+            st.divider()
     
     if perf_set.alternate_performance.wb_data is not None:
-        weight = perf_set.alternate_performance.wb_data.weight_total
-        dweight = 780 - weight
-        torque = perf_set.alternate_performance.wb_data.momentum_total
-        torque_label = "OK" if perf_set.alternate_performance.wb_data.within_limits else "-NOT OK-"
-        st.markdown(f"## Weight & Balance @ {perf_set.alternate_performance.summary.icao_code}")
-        st.pyplot(perf_set.alternate_performance.wb_fig)
-        col1, col2 = st.columns(2)
-        col1.metric("Weight", f"{round(weight)} kg", f"{round(dweight)} kg")
-        col2.metric("Torque", f"{round(torque)} kgm", torque_label)
+        with st.expander(f"Weight & Balance @ {perf_set.alternate_performance.summary.icao_code}"):
+            weight = perf_set.alternate_performance.wb_data.weight_total
+            dweight = 780 - weight
+            torque = perf_set.alternate_performance.wb_data.momentum_total
+            torque_label = "OK" if perf_set.alternate_performance.wb_data.within_limits else "-NOT OK-"
+            # st.markdown(f"## Weight & Balance @ {perf_set.alternate_performance.summary.icao_code}")
+            st.pyplot(perf_set.alternate_performance.wb_fig)
+            st.divider()
+            col1, col2 = st.columns(2)
+            col1.metric("Weight", f"{round(weight)} kg", f"{round(dweight)} kg")
+            col2.metric("Torque", f"{round(torque)} kgm", torque_label)
+            st.divider()
