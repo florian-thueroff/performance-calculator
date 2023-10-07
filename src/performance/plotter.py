@@ -130,6 +130,8 @@ def plot_startroll(weight, temp, alt, qnh, folder = "", file = ""):
     # plotter.save(os.path.join("/code","img", "startroll_0m.png"))
     plotter.save(os.path.join(folder, f"{file}.png"))
 
+    return plotter.get_fig()
+
 
 def plot_startroll_over_15m_obstacle(weight, temp, alt, qnh, folder="", file=""):
     
@@ -253,6 +255,8 @@ def plot_startroll_over_15m_obstacle(weight, temp, alt, qnh, folder="", file="")
     # plotter.save(os.path.join("/code","img", "startroll_15m.png"))
     plotter.save(os.path.join(folder, f"{file}.png"))
 
+    return plotter.get_fig()
+
 
 def plot_landingroll_over_15m_obstacle(weight, temp, alt, qnh, folder="", file=""):
     
@@ -375,6 +379,7 @@ def plot_landingroll_over_15m_obstacle(weight, temp, alt, qnh, folder="", file="
 
     # plotter.save(os.path.join("/code","img", "landingroll_15m.png"))
     plotter.save(os.path.join(folder, f"{file}.png"))
+    return plotter.get_fig()
 
 
 def plot_landingroll(weight, temp, alt, qnh, folder="", file=""):
@@ -500,3 +505,5 @@ def plot_landingroll(weight, temp, alt, qnh, folder="", file=""):
 
     # plotter.save(os.path.join("/code","img", "landingroll_0m.png"))
     plotter.save(os.path.join(folder, f"{file}.png"))
+
+    return plotter.get_fig()

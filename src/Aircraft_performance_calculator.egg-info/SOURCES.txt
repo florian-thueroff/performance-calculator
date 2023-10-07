@@ -17,6 +17,7 @@ src/model/second_order_polynomial.py
 src/model/second_order_rational.py
 src/my_html/__init__.py
 src/my_html/renderer.py
+src/my_html/utils.py
 src/performance/__init__.py
 src/performance/models.py
 src/performance/plotter.py

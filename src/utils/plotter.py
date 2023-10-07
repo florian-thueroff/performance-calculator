@@ -48,6 +48,10 @@ class Plotter:
             self.ax.set_aspect(self.aspect_ratio)
     
 
+    def get_fig(self):
+        return self.fig
+    
+    
     def add_text_label(self, x, y, text, color, rotation=0, verticalalignment='center', horizontalalignment='center', x_transform = lambda x: x):
         if self.aspect_ratio != 1:
             m = math.tan(rotation * 2 * math.pi / 360)

@@ -20,3 +20,4 @@ Requires-Dist: uvicorn<0.16.0,>=0.15.0
 Requires-Dist: aiofiles
 Requires-Dist: pdfkit
 Requires-Dist: streamlit
+Requires-Dist: streamlit-extras

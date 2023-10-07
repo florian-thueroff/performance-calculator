@@ -1,7 +1,7 @@
 from zipfile import ZipFile
 from matplotlib import pyplot as plt
 import streamlit as st
-import tempfile
+from streamlit_extras.switch_page_button import switch_page
 
 if 'cache' not in st.session_state:
     metrics = [
@@ -34,3 +34,7 @@ Enter your Flight information in the tabs
 
 and download a printable performance and weight and balance summary in the "summary" tab.
 """)
+
+next_page = st.button(label="Get Started", type="primary")
+if next_page:
+    switch_page("general")

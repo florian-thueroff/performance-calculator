@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_extras.switch_page_button import switch_page
 
 st.set_page_config(page_title="Alternate Airfield", page_icon="✈️")
 st.markdown("# Alternate Airfield")
@@ -88,3 +89,10 @@ st.session_state["cache"]["alternate_wind_direction"] = st.number_input(
     step=1,
     value=st.session_state["cache"]["alternate_wind_direction"]
 )
+
+summary = st.button(
+    label="Inspect Results",
+    type="primary"
+)
+if summary:
+    switch_page("summary")

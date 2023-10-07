@@ -1,6 +1,6 @@
 from model.first_order_polynomial import FirstOrderPolynomial
 
-from weightbalance.constants import A, B, C, D, E, slope_baggage, slope_fuel, slope_pilot_passenger
+from weightbalance.constants import slope_baggage, slope_fuel, slope_pilot_passenger
 from matplotlib import pyplot as plt
 from matplotlib.patches import ConnectionPatch
 
@@ -156,88 +156,4 @@ def plot_wb(
 
     # fig.set_figheight(8)
     fig.savefig(f"{folder}/{filename}.png", dpi=200, bbox_inches='tight')
-    # plotter.add_arrow(
-    #     x=temp,
-    #     y=model_left(temp),
-    #     dx=50-temp,
-    #     dy=0,
-    #     color='red',
-    #     x_transform=lambda x: 5*(x+20),
-    # )
-
-    # # right hand side plot
-    # plotter.plot(
-    #     model=model_right,
-    #     x0=600,
-    #     x1=weight,
-    #     x_transform=lambda x: 5*(x-460)/2,
-    #     color='r',
-    # )
-    # plotter.add_arrow(
-    #     x=weight,
-    #     y=model_right(weight),
-    #     dx=780-weight,
-    #     dy=0,
-    #     color='red',
-    #     x_transform=lambda x: 5*(x-460)/2,
-    # )
-
-    # # Decorations
-    # plotter.add_line(  # separator line (temp / mass)
-    #     x0=50,
-    #     y0=100,
-    #     x1=50,
-    #     y1=500,
-    #     color='black',
-    #     x_transform=lambda x: 5*(x+20),
-    # )
-    # plotter.add_text_label(  # pressure altitude
-    #     x=(temp-20)/2,
-    #     y=model_left((temp-20)/2),
-    #     text=f"{round(pressure_altitude)} ft",
-    #     rotation=math.atan(m/5) / 2.0 / math.pi * 360,
-    #     color='red',
-    #     x_transform=lambda x: 5*(x+20),
-    #     verticalalignment='bottom',
-    # )
-    # plotter.add_line(  # temperature (line)
-    #     x0=temp,
-    #     y0=100,
-    #     x1=temp,
-    #     y1=500,
-    #     color='blue',
-    #     x_transform=lambda x: 5*(x+20),
-    # )
-    # plotter.add_text_label(  # temperature (label)
-    #     x=temp,
-    #     y=505,
-    #     text=f"{temp}°C",
-    #     color='blue',
-    #     x_transform=lambda x: 5*(x+20),
-    #     verticalalignment='bottom',
-    # )
-    # plotter.add_line(  # weight (line)
-    #     x0=weight,
-    #     y0=100,
-    #     x1=weight,
-    #     y1=500,
-    #     color='blue',
-    #     x_transform=lambda x: 5*(x-460)/2,
-    # )
-    # plotter.add_text_label(  # weight (label)
-    #     x=weight,
-    #     y=505,
-    #     text=f"{weight}kg",
-    #     color='blue',
-    #     x_transform=lambda x: 5*(x-460)/2,
-    #     verticalalignment='bottom',
-    # )
-    # plotter.add_text_label(  # result
-    #     x=810,
-    #     y=model_right(weight),
-    #     text=f"{round(model_right(weight))}m",
-    #     color='red',
-    #     horizontalalignment='left',
-    # )
-
-    # plotter.save(os.path.join("/code","img", "startroll_0m.png"))
+    return fig

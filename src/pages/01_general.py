@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_extras.switch_page_button import switch_page
 
 st.set_page_config(page_title="General Information", page_icon="✏️")
 st.markdown("# General Information")
@@ -60,3 +61,7 @@ st.session_state["cache"]["safety_margin"] = st.number_input(
     key="safety_margin",
     value=st.session_state["cache"]["safety_margin"],
 )
+
+next_page = st.button(label="Add Departure", type="primary")
+if next_page:
+    switch_page("departure")

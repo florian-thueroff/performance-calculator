@@ -35,57 +35,57 @@ class HTMLRenderer:
         <table class="border" border="2" cellpadding="10" cellspacing="5">
             <tr>
                 <th class="color" width="40%">Key Figure</th>
-                <th class="color" width="20%">Departure ({dep.icao_code})</th>
-                <th class="color" width="20%">Destination ({dest.icao_code})</th>
-                <th class="color" width="20%">Alternate ({alt.icao_code})</th>
+                <th class="color" width="20%">Departure ({dep.icao_code if dep is not None else "N/A"})</th>
+                <th class="color" width="20%">Destination ({dest.icao_code if dest is not None else "N/A"})</th>
+                <th class="color" width="20%">Alternate ({alt.icao_code if alt is not None else "N/A"})</th>
             </tr>
             <tr class="main">
                 <td>Time of Departure / Arrival</td>
-                <td>{dep.time}</td>
-                <td>{dest.time}</td>
-                <td>{alt.time}</td>
+                <td>{dep.time if dep is not None else "--:--"}</td>
+                <td>{dest.time if dest is not None else "--:--"}</td>
+                <td>{alt.time if alt is not None else "--:--"}</td>
             </tr>
             <tr class="main">
                 <td>Outside Air Temperature</td>
-                <td>{round(dep.oat)}°C</td>
-                <td>{round(dest.oat)}°C</td>
-                <td>{round(alt.oat)}°C</td>
+                <td>{round(dep.oat) if dep is not None else "--"}°C</td>
+                <td>{round(dest.oat) if dest is not None else "--"}°C</td>
+                <td>{round(alt.oat) if alt is not None else "--"}°C</td>
             </tr>
             <tr class="main">
                 <td>QNH</td>
-                <td>{round(dep.qnh)} hPa</td>
-                <td>{round(dest.qnh)} hPa</td>
-                <td>{round(alt.qnh)} hPa</td>
+                <td>{round(dep.qnh) if dep is not None else "--"} hPa</td>
+                <td>{round(dest.qnh) if dest is not None else "--"} hPa</td>
+                <td>{round(alt.qnh) if alt is not None else "--"} hPa</td>
             </tr>
             <tr class="main">
                 <td>Field Elevation</td>
-                <td>{round(dep.elevation)} ft</td>
-                <td>{round(dest.elevation)} ft</td>
-                <td>{round(alt.elevation)} ft</td>
+                <td>{round(dep.elevation) if dep is not None else "--"} ft</td>
+                <td>{round(dest.elevation) if dest is not None else "--"} ft</td>
+                <td>{round(alt.elevation) if alt is not None else "--"} ft</td>
             </tr>
             <tr class="main">
                 <td>Pressure Altitude</td>
-                <td>{round(dep.pressure_altitude)} ft</td>
-                <td>{round(dest.pressure_altitude)} ft</td>
-                <td>{round(alt.pressure_altitude)} ft</td>
+                <td>{round(dep.pressure_altitude) if dep is not None else "--"} ft</td>
+                <td>{round(dest.pressure_altitude) if dest is not None else "--"} ft</td>
+                <td>{round(alt.pressure_altitude) if alt is not None else "--"} ft</td>
             </tr>
             <tr class="main">
                 <td>Runway Heading</td>
-                <td>{round(dep.rw_heading)}°</td>
-                <td>{round(dest.rw_heading)}°</td>
-                <td>{round(alt.rw_heading)}°</td>
+                <td>{round(dep.rw_heading) if dep is not None else "--"}°</td>
+                <td>{round(dest.rw_heading) if dest is not None else "--"}°</td>
+                <td>{round(alt.rw_heading) if alt is not None else "--"}°</td>
             </tr>
             <tr class="main">
                 <td>Wind</td>
-                <td>{round(dep.wind_direction)}°@{round(dep.wind_speed)}kt</td>
-                <td>{round(dest.wind_direction)}°@{round(dest.wind_speed)}kt</td>
-                <td>{round(alt.wind_direction)}°@{round(alt.wind_speed)}kt</td>
+                <td>{round(dep.wind_direction) if dep is not None else "--"}°@{round(dep.wind_speed) if dep is not None else "--"}kt</td>
+                <td>{round(dest.wind_direction) if dest is not None else "--"}°@{round(dest.wind_speed) if dest is not None else "--"}kt</td>
+                <td>{round(alt.wind_direction) if alt is not None else "--"}°@{round(alt.wind_speed) if alt is not None else "--"}kt</td>
             </tr>
             <tr class="main">
                 <td>Headwind Component</td>
-                <td>{round(dep.headwind_component)} kt</td>
-                <td>{round(dest.headwind_component)} kt</td>
-                <td>{round(alt.headwind_component)} kt</td>
+                <td>{round(dep.headwind_component) if dep is not None else "--"} kt</td>
+                <td>{round(dest.headwind_component) if dest is not None else "--"} kt</td>
+                <td>{round(alt.headwind_component) if alt is not None else "--"} kt</td>
             </tr>
         </table>"""
     
@@ -496,7 +496,7 @@ def print_summary(wb_res: WBResultSet):
             <tr>
                 <th class="color" width="50%">Key Figure</th>
                 <th class="color" width="25%">Mass</th>
-                <th class="color" width="25%">Momentum</th>
+                <th class="color" width="25%">Torque</th>
             </tr>
             <tr class="main">
                 <td>Empty Aircraft</td>
@@ -523,7 +523,7 @@ def print_summary(wb_res: WBResultSet):
                 <td colspan="1" align="right" class="border center">{f'{wb_res.weight_total:.1f}'} kg</td>
             </tr>
             <tr>
-                <td colspan="2" align="right"><b>TOTAL MOMENTUM</b></td>
+                <td colspan="2" align="right"><b>TOTAL TORQUE</b></td>
                 <td colspan="1" align="right" class="border center">{f'{wb_res.momentum_total:.1f}'} kgm</td>
             </tr>
             <tr>

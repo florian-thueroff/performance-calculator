@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from typing import Tuple
 
 from model.first_order_polynomial import FirstOrderPolynomial
 from weightbalance.constants import A, B, C, D, E, slope_baggage, slope_fuel, slope_pilot_passenger
